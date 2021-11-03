@@ -17,3 +17,4 @@ FROM number_tbl;
 INSERT INTO number_tbl VALUES (null);
 
 -- Now rerun the above query with aggregate functions.
+-- THis doesn't have any affect on the sums and averages.
