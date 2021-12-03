@@ -1,0 +1,7 @@
+START TRANSACTION;
+
+SAVEPOINT my_savepoint;
+
+ROLLBACK TO SAVEPOINT my_savepoint;
+
+COMMIT;
