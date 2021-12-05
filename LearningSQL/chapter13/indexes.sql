@@ -40,3 +40,16 @@ VALUES
  -- Multicolumn index
 CREATE INDEX idx_full_name
 ON customer (last_name, first_name);
+
+-- Bitmap indexes, doesn't work in PostgreSQL
+CREATE BITMAP INDEX idx_active ON customer (active);
+
+/*
+Explain statement is used to ask the server to show the execution plan 
+for the query rather than executing the query:
+*/
+
+EXPLAIN
+SELECT customer_id,first_name,last_name
+FROM customer
+WHERE first_name LIKE 'S%' AND last_name LIKE 'P%';
