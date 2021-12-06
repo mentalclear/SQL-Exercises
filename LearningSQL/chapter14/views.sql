@@ -25,6 +25,12 @@ HAVING count(*) > 1
 ORDER BY 1;
 
 -- Joins can be used as well
+SELECT cv.first_name, cv.last_name, p.amount
+FROM customer_vw cv
+INNER JOIN payment p
+ON cv.customer_id = p.customer_id
+WHERE p.amount >= 11;
+
 
 
 
