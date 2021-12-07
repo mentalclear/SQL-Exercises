@@ -31,9 +31,25 @@ INNER JOIN payment p
 ON cv.customer_id = p.customer_id
 WHERE p.amount >= 11;
 
-
-
-
-
 -- To delete a view
 DROP VIEW customer_vw;
+
+
+-- View for active customers only
+CREATE VIEW active_customer_vw
+ (customer_id,
+  first_name,
+  last_name,
+  email 
+ )
+AS
+SELECT 
+  customer_id,
+  first_name,
+  last_name,
+  concat(substr(email,1,2), '*****', RIGHT(email, 4) ) email
+FROM customer
+WHERE active = 1;
+
+SELECT first_name, last_name, email
+FROM active_customer_vw;
