@@ -16,3 +16,5 @@ COPY (
     LIMIT 20) 
 TO '/tmp/Top20housing.csv'
 WITH (FORMAT CSV, HEADER, DELIMITER ';');
+
+
