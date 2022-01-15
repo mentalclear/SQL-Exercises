@@ -1,0 +1,24 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "192.168.68.5",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "PG-Sakila",
+            "database": "sakila",
+            "username": "dimm"
+        },
+        {
+            "previewLimit": 50,
+            "server": "192.168.68.5",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "PG-test001",
+            "database": "test001",
+            "username": "dimm"
+        }
+    ]
+}
