@@ -19,6 +19,16 @@
             "name": "PG-test001",
             "database": "test001",
             "username": "dimm"
+        },
+        {
+            "previewLimit": 50,
+            "server": "192.168.68.5",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "Analysis",
+            "database": "analysis",
+            "username": "dimm"
         }
     ]
 }
