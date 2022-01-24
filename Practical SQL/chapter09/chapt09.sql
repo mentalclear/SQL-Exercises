@@ -128,4 +128,23 @@ SELECT st,
 FROM meat_poultry_egg_inspect
 ORDER BY st;
 
-SELECT st, est_number FROM meat_poultry_egg_inspect WHERE st='MN';
+UPDATE meat_poultry_egg_inspect
+  SET st = 'MN'
+WHERE est_number = 'V18677A';
+
+UPDATE meat_poultry_egg_inspect
+  SET st = 'AL'
+WHERE est_number = 'M45319+P45319';
+
+UPDATE meat_poultry_egg_inspect
+  SET st = 'WI'
+WHERE est_number = 'M263A+P263A+V263A';
+
+-- Testing if we are good now:
+SELECT est_number,
+       company,
+       city,
+       st,
+       zip
+FROM meat_poultry_egg_inspect
+WHERE st IS NULL;
