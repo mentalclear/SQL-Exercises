@@ -116,6 +116,16 @@ SELECT
     (SELECT count(*) FROM meat_poultry_egg_inspect_backup) AS backup;
 
 
+-- Create a copy of a column
+ALTER TABLE meat_poultry_egg_inspect ADD COLUMN st_copy varchar(2);
 
+UPDATE meat_poultry_egg_inspect
+SET st_copy = st;
 
+-- Check if results are the same:
+SELECT st,
+    st_copy
+FROM meat_poultry_egg_inspect
+ORDER BY st;
 
+SELECT st, est_number FROM meat_poultry_egg_inspect WHERE st='MN';
