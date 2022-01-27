@@ -148,3 +148,50 @@ SELECT est_number,
        zip
 FROM meat_poultry_egg_inspect
 WHERE st IS NULL;
+
+-- Updating values for consistency
+ALTER TABLE meat_poultry_egg_inspect
+ADD COLUMN company_standard VARCHAR(100);
+
+-- Copy the company data to the new column created above:
+UPDATE meat_poultry_egg_inspect
+SET company_standard = company;
+
+SELECT company, company_standard 
+FROM meat_poultry_egg_inspect
+WHERE company LIKE 'Armour%';
+
+UPDATE meat_poultry_egg_inspect
+SET company_standard = 'Armour-Eckrich Meats'
+WHERE company LIKE 'Armour%';
+
+-- Repare Zip codes with concatination:
+
+-- Make a backup:
+ALTER TABLE meat_poultry_egg_inspect
+ADD COLUMN zip_copy VARCHAR(5);
+
+UPDATE meat_poultry_egg_inspect
+SET zip_copy = zip;
+
+SELECT st, zip
+FROM meat_poultry_egg_inspect
+WHERE st IN('CT','MA','ME','NH','NJ','RI','VT');
+
+-- Update zips for 'PR', 'VI'
+
+UPDATE meat_poultry_egg_inspect
+SET zip = '00' || zip
+WHERE st IN('PR','VI') AND length(zip) = 3;
+
+-- Update more Zips
+UPDATE meat_poultry_egg_inspect
+SET zip = '0' || zip
+WHERE st IN('CT','MA','ME','NH','NJ','RI','VT') AND length(zip) = 4;
+
+SELECT length(zip),
+       count(*) AS length_count
+FROM meat_poultry_egg_inspect
+GROUP BY length(zip)
+ORDER BY length(zip) ASC;
+
