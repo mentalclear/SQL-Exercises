@@ -13,3 +13,20 @@ SELECT * FROM acs_2011_2015_stats;
 
 
 SELECT avg(median_hh_income) FROM acs_2011_2015_stats WHERE st='Virginia';
+
+-- Listing 10-2
+SELECT corr(median_hh_income, pct_bachelors_higher) 
+AS bachelors_income_r
+FROM acs_2011_2015_stats;
+
+-- Listing 10-3
+SELECT round(
+      corr(median_hh_income, pct_bachelors_higher)::numeric, 2
+      ) AS bachelors_income_r,
+    round(
+      corr(pct_travel_60_min, median_hh_income)::numeric, 2
+      ) AS income_travel_r,
+    round(
+      corr(pct_travel_60_min, pct_bachelors_higher)::numeric, 2
+      ) AS bachelors_travel_r
+FROM acs_2011_2015_stats;
