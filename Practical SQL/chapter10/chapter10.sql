@@ -30,3 +30,19 @@ SELECT round(
       corr(pct_travel_60_min, pct_bachelors_higher)::numeric, 2
       ) AS bachelors_travel_r
 FROM acs_2011_2015_stats;
+
+-- Listing 10-4
+
+SELECT round(
+  regr_slope(median_hh_income, pct_bachelors_higher)::numeric, 2
+) AS slope,
+  round(
+    regr_intercept(median_hh_income, pct_bachelors_higher)::numeric, 2
+) AS y_intercept
+FROM acs_2011_2015_stats;
+
+-- Listing 10-5
+SELECT round(
+  regr_r2(median_hh_income,pct_bachelors_higher)::numeric, 3
+) AS r_squared
+FROM acs_2011_2015_stats;
