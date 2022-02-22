@@ -46,3 +46,16 @@ SELECT
 FROM fbi_crime_data_2015
 WHERE population >= 500000
 ORDER BY violent_crime_per_100000 DESC;
+
+--Exercise 10-3 Bonus
+SELECT
+    libname,
+    stabr,
+    visits,
+    popu_lsa,
+    round(
+        (visits::numeric / popu_lsa) * 1000, 1
+        ) AS visits_per_1000,
+    rank() OVER (ORDER BY (visits::numeric / popu_lsa) * 1000 DESC)
+FROM pls_fy2014_pupld14a
+WHERE popu_lsa >= 250000;
