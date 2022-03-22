@@ -222,3 +222,122 @@ LEFT JOIN LATERAL (SELECT *
 ON true
 ORDER BY t.id;
 
+-- Listing 13-13 Using Common Table Expressions(CTE)
+-- This creates a temporary table from the subquery
+WITH large_counties (county_name, state_name, pop_est_2019)
+AS (
+    SELECT county_name, state_name, pop_est_2019
+    FROM us_counties_pop_est_2019
+    WHERE pop_est_2019 >= 100000
+   )
+SELECT state_name, count(*)
+FROM large_counties
+GROUP BY state_name
+ORDER BY count(*) DESC;
+
+-- Listing 13-14
+
+-- Source query
+SELECT census.state_name AS st,
+       census.pop_est_2018,
+       est.establishment_count,
+       round((est.establishment_count/census.pop_est_2018::numeric) * 1000, 1)
+           AS estabs_per_thousand
+FROM (  SELECT st,
+               sum(establishments) AS establishment_count
+        FROM cbp_naics_72_establishments
+        GROUP BY st )
+    AS est
+JOIN (  SELECT state_name,
+               sum(pop_est_2018) AS pop_est_2018
+        FROM us_counties_pop_est_2019
+        GROUP BY state_name )
+    AS census
+ON est.st = census.state_name
+ORDER BY estabs_per_thousand DESC;
+
+-- Rewritten using CTE
+WITH 
+    counties (st, pop_est_2018) AS
+    (SELECT state_name, sum(pop_est_2018)
+     FROM us_counties_pop_est_2019
+     GROUP BY state_name),
+    establishments (st, establishment_count) AS
+    (SELECT st, sum(establishments) AS establishment_count
+     FROM cbp_naics_72_establishments
+     GROUP BY st)
+SELECT counties.st,
+       pop_est_2018,
+       establishment_count,
+       round((establishments.establishment_count /
+              counties.pop_est_2018::numeric(10,1)) * 1000, 1)
+           AS estabs_per_thousand
+FROM counties JOIN establishments
+ON counties.st = establishments.st
+ORDER BY estabs_per_thousand DESC;           
+
+-- Listing 13-15 Using CTE to minimize redundant code
+-- Source 13-6
+SELECT county_name,
+       state_name AS st,
+       pop_est_2019,
+       pop_est_2019 - (SELECT percentile_cont(.5) WITHIN GROUP (ORDER BY pop_est_2019) 
+                       FROM us_counties_pop_est_2019) AS diff_from_median
+FROM us_counties_pop_est_2019
+WHERE (pop_est_2019 - (SELECT percentile_cont(.5) WITHIN GROUP (ORDER BY pop_est_2019) 
+                       FROM us_counties_pop_est_2019))
+       BETWEEN -1000 AND 1000;
+
+-- New query:
+WITH us_median AS
+    (
+        SELECT percentile_cont(.5) 
+        WITHIN GROUP (ORDER BY pop_est_2019) AS us_median_pop
+        FROM us_counties_pop_est_2019
+    )
+SELECT county_name,
+       state_name AS st,
+       pop_est_2019,
+       us_median_pop,
+       pop_est_2019 - us_median_pop AS diff_from_median
+FROM us_counties_pop_est_2019 CROSS JOIN us_median
+WHERE (pop_est_2019 - us_median_pop)
+        BETWEEN -1000 AND 1000;
+
+-- Listing 13-16 Tabulating Survey Results
+
+CREATE TABLE ice_cream_survey (
+    response_id integer PRIMARY KEY,
+    office text,
+    flavor text
+);
+
+-- Import from file:
+COPY ice_cream_survey
+FROM '/home/dimm/ice_cream_survey.csv'
+WITH (FORMAT CSV, HEADER);
+
+SELECT * 
+FROM ice_cream_survey
+ORDER BY response_id
+LIMIT 5;
+
+-- Listing 13-17
+
+SELECT *
+FROM crosstab('SELECT office,
+                    flavor,
+                    count(*)
+                FROM ice_cream_survey
+                GROUP BY office, flavor
+                ORDER BY office', 
+                
+                'SELECT flavor
+                FROM ice_cream_survey
+                GROUP BY flavor
+                ORDER BY flavor')
+AS (office TEXT,
+    chocolate BIGINT,
+    strawberry BIGINT,
+    vanilla BIGINT);
+
